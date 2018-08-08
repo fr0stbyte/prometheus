@@ -410,6 +410,58 @@ func TestRelabel(t *testing.T) {
 				"a": "foo",
 			},
 		},
+		{
+			input: model.LabelSet{
+				"a": "foo-bar",
+			},
+			relabel: []*config.RelabelConfig{
+				{
+					SourceLabels: model.LabelNames{"a"},
+					Character:    "-",
+					Replacement:  ".",
+					TargetLabel:  "b",
+					Action:       config.RelabelTranslate,
+				},
+			},
+			output: model.LabelSet{
+				"a": "foo-bar",
+				"b": "foo.bar",
+			},
+		},
+		{
+			input: model.LabelSet{
+				"a": "foo__bar",
+			},
+			relabel: []*config.RelabelConfig{
+				{
+					SourceLabels: model.LabelNames{"a"},
+					Character:    "__",
+					Replacement:  ".",
+					TargetLabel:  "a",
+					Action:       config.RelabelTranslate,
+				},
+			},
+			output: model.LabelSet{
+				"a": "foo.bar",
+			},
+		},
+		{
+			input: model.LabelSet{
+				"a": "foo__bar",
+			},
+			relabel: []*config.RelabelConfig{
+				{
+					SourceLabels: model.LabelNames{"a"},
+					Character:    "+",
+					Replacement:  ".",
+					TargetLabel:  "a",
+					Action:       config.RelabelTranslate,
+				},
+			},
+			output: model.LabelSet{
+				"a": "foo__bar",
+			},
+		},
 	}
 
 	for _, test := range tests {

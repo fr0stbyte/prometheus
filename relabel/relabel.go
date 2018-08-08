@@ -98,6 +98,25 @@ func relabel(labels model.LabelSet, cfg *config.RelabelConfig) model.LabelSet {
 				delete(labels, ln)
 			}
 		}
+	case config.RelabelTranslate:
+		// If there is no match no replacement must take place.
+		if !strings.Contains(val, cfg.Character) {
+			break
+		}
+
+		target := model.LabelName(cfg.TargetLabel)
+		if !target.IsValid() {
+			panic(fmt.Errorf("target label %v is not valid", target))
+			//			delete(labels, target)
+			//			break
+		}
+		res := strings.Replace(val, cfg.Character, cfg.Replacement, -1)
+		if len(res) == 0 {
+			panic(fmt.Errorf("result is 0 len"))
+			//			delete(labels, target)
+			//			break
+		}
+		labels[target] = model.LabelValue(res)
 	default:
 		panic(fmt.Errorf("relabel: unknown relabel action type %q", cfg.Action))
 	}

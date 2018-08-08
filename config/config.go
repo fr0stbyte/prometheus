@@ -98,6 +98,7 @@ var (
 		Separator:   ";",
 		Regex:       MustNewRegexp("(.*)"),
 		Replacement: "$1",
+		Character:   "",
 	}
 
 	// DefaultRemoteWriteConfig is the default remote write configuration.
@@ -488,6 +489,8 @@ const (
 	RelabelLabelDrop RelabelAction = "labeldrop"
 	// RelabelLabelKeep drops any label not matching the regex.
 	RelabelLabelKeep RelabelAction = "labelkeep"
+	// RelabelTranslate translates the matching groups of regex into a new value
+	RelabelTranslate RelabelAction = "translate"
 )
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -518,6 +521,8 @@ type RelabelConfig struct {
 	// TargetLabel is the label to which the resulting string is written in a replacement.
 	// Regexp interpolation is allowed for the replace action.
 	TargetLabel string `yaml:"target_label,omitempty"`
+	// Character
+	Character string `yaml:"character,omitempty"`
 	// Replacement is the regex replacement pattern to be used.
 	Replacement string `yaml:"replacement,omitempty"`
 	// Action is the action to be performed for the relabeling.
